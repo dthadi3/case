@@ -1,4 +1,5 @@
 language: python
+arch: ppc64le
 sudo: false
 cache: false
 python:
