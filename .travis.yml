@@ -1,6 +1,7 @@
 language: python
 sudo: false
 cache: false
+arch: ppc64le
 python:
     - '3.5'
 env:
@@ -17,6 +18,117 @@ env:
     - TOXENV=flake8
     - TOXENV=flakeplus
     - TOXENV=apicheck
+# Disable version 3.3, 3.2 & pypy
+jobs: 
+  exclude:
+    - arch: ppc64le
+      TOXENV=2.6
+    - arch: ppc64le
+      TOXENV=3.3
+    - arch: ppc64le
+      TOXENV=3.4
+    - arch: ppc64le
+      TOXENV=pypy
+    - arch: ppc64le
+      TOXENV=flake8
+    - arch: ppc64le
+      TOXENV=flakeplus
+    - arch: ppc64learch:
+    - amd64
+    - ppc64le
+language: cpp
+sudo: required
+dist: bionic
+env:
+  matrix:
+  - BUILD=windows
+  - BUILD=native
+os:
+- linux
+- osx
+matrix:
+  exclude:
+  - os: osx
+    env: BUILD=windows
+  - arch: ppc64le
+    env: BUILD=windows
+install:
+- "./build-scripts/travis-ci.sh language: python
+sudo: false
+cache: false
+arch: ppc64le
+python:
+    - '3.5'
+env:
+  global:
+    PYTHONUNBUFFERED=yes
+  matrix:
+    - TOXENV=2.6
+    - TOXENV=2.7
+    - TOXENV=3.3
+    - TOXENV=3.4
+    - TOXENV=3.4
+    - TOXENV=pypy
+    - TOXENV=3.5
+    - TOXENV=flake8
+    - TOXENV=flakeplus
+    - TOXENV=apicheck
+# Disable version 3.3, 3.2 & pypy
+jobs: 
+  exclude:
+    - arch: ppc64le
+      TOXENV=2.6
+    - arch: ppc64le
+      TOXENV=3.3
+    - arch: ppc64le
+      TOXENV=3.4
+    - arch: ppc64le
+      TOXENV=pypy
+    - arch: ppc64le
+      TOXENV=flake8
+    - arch: ppc64le
+      TOXENV=flakeplus
+    - arch: ppc64le
+      TOXENV=apicheck
+install: travis_retry pip install -U tox
+script: tox -v -- -v
+after_success:
+  - .tox/$TRAVIS_PYTHON_VERSION/bin/coverage xml
+  - .tox/$TRAVIS_PYTHON_VERSION/bin/codecov -e TOXENV
+setup_qt"
+- "./build-scripts/travis-ci.sh get_quazip"
+script:
+- "./build-scripts/travis-ci.sh build"
+before_deploy:
+- "./build-scripts/travis-ci.sh package"
+deploy:
+- provider: s3
+  access_key_id:
+    secure: GsN4LS6DXbwkMlUchj6RX/E/id4g+PTjFYzwATjVuk+Yilipdn/vpGWGLthJpNN9ontgXaTI9+R8vBgAxR6IRmmMHGafYQVBnH0n/RwA9qG4UTV5DEO/Vje2fXUAIxsinHG7jqJewIOAODvfkj4uG+DgUUv9V3BgWUl0whPyoAlkoXlZJ6iCWrCdgQ6RSXKqIJbaIjd1m5AvATXVTkpW2V6Fqk0/uTZDAM7pGVpY3Ddkpo1Xt6djRyz1W9Y9GyxxcUh9ecyeK2TdUoy8bvm43EnCNtLbOqSdkF1zWWU7uguDfYXw5tHtxf5BWbP2H1addGdExLHsFvG88zW0YhxzLWEhKaPQOvTstMZ1QUvP2b5pUVE/VyRF7he2xoG3X8UOHk0KKgO+8BxQo5sydt/91IuyJ9DVZxmHHWvIrOm5PJxF82RfmVxw8lTR5mb8Y9A0cN+KBa7QaLwPo+vLOqREIQh2Vk12aP/9GXwZF0NLv2vusvoosOJ9NsTR6gtMKY8nkbBLTLnxWNm94OEm2dLAL9qc4Gl5InitVEoJA51eK+EVpvdVWnqaC+TSL8482Xly+hYIyBOkBgywkP2FEszonleK/BMu7J+fEmoJz2FtnTumGOszm8hioy/p2eGv8ilgpeIP9yq4CPVBdoucVI4sNeq53VF6jyexhfF/zkkBPOk=
+  secret_access_key:
+    secure: tUdQW5zil2MP3vYQFYEF7Y6bUeADbvr36S8EJdNdAsxu+1dRSdLsUg04qzD8bNb7GN1Ez+b3XiEc5TZx4zRZ44O8I/Sdggcpb5JqUhOJjwQIq3VFBsJll4OIJkt536sSh2S/YpYkIU45npatcHZVrxxqy/Gs4R89tyltwzjy6bMgQjOF8bRaXZnu4Yz8pn7GyVCHAXJ4Y+09su7qZnTjixe9097SgJMAzSLh8aqBIqkT0ULuU8ePaM1xOIwMuq7PjYi/QtDN19yOyGIHt8ceQ1VA16uio1UdOys4PHKY+2a9WMcT344OGLN5pQ5qYLuJYnFrjlnW2fBWfM9CG1Tua+jjiegyLMl7FPxja1V5ML2q/EzZemQkpoy9AiJQUO+8AMACK7osSFUIfx2f+Ppj2sjCXgb0FJtey0kSiATLsHBFx5lAlkGuv2vTM090bOQ6zWoymmIu5O9rnox2fh5PS5XfJ0yB9BVWHBC9p1VYRq17/keOPTDcsdXVd6gkNzdDlDgKEqrwcEltYynWEL/qQqVOFYj5thxpaxG79z5nKnGew87gigr5iHp8/B4OqzzGwMovSYYLmS3ihAycuwzHdUeXoZ+r+PyYjqGvMZURVemqXsz/mXkbH5NdgXOd7Q7ZStvs3X9uzqq7LaCrKiYaGLeVWEY/YB8cvGLWW4uS8gw=
+  bucket: dh4
+  skip_cleanup: true
+  local_dir: build
+  upload-dir: cen64-qt
+  on:
+    all_branches: true
+    condition: $TRAVIS_PULL_REQUEST = false
+- provider: releases
+  api_key:
+    secure: dqCRa1PQCU/QyDNMdt1Ejz8FMDuEipNTxM30vwS8Hd6gj7w/Q9QWBnpCSevOi0b+Nx76hS2FEKe/u7vbqlE1Pvd7bSPOQ0wi7SWcldwux2QGRFuoWX7ByMKKB/rR8RaKkx0W1yhk9ipkiIOZkvF1gTWGAkLLim8wm3ax6EKNB7tKqb9Sqc6ZYwOb9u9tO8r3ZufRKcBU3Vy1BEkP0jZFKYcGbuk7u/Ra9E3/VwxLd5qh8z7CfGNp7Rw4+CnhHTbhlWJicZwaM0IauL9jQw7nqKKjfCsdUZUB9lF7gLCs6/Sdca9rH2ErZiKVeMIe317K/xcKUPTBt3AbFrPdDKNq54Ty+gGfSeJbaxos5Wn7h5s+hKMDTIUpPv9suO5M8spDT2P+yuqKH4tdDQa51AsxudRNpnYCCfBlUg4Z1Ew2sTst24eNz+7owXBX/eCoHxklkmHTU/pE1VoRY2FleJg9mTNy6NjFb5oENjbCfKeaP4bnyg2tVJvUr2RoS5hBVOBtBA/NbdI7SC3yStrAlyrtqBS0wZcoUiXniLYS28YiZH1d8rZYH9YumIzq7Ue7T1SEjS7WJZM2Ng6STXkP4j1zrcUfnk22LeaeB6ULTH1lmdfRxmFECKDSEyvwj60Q6GDxLGUtqlBoUoQjSXwO4E7x0jN/oNsPHjkElJaOuqzZ/xc=
+  skip_cleanup: true
+  file_glob: true
+  file: build/*/cen64-qt_*
+  on:
+    tags: true
+
+      TOXENV=apicheck
+before_install:
+        |
+        if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then
+    sudo chown -Rv $USER:$GROUP /usr/local/lib/python3.5/dist-packages
+  fi
 install: travis_retry pip install -U tox
 script: tox -v -- -v
 after_success:
