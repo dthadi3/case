@@ -1,41 +1,4 @@
-language: python
-sudo: false
-cache: false
 arch: ppc64le
-python:
-    - '3.5'
-env:
-  global:
-    PYTHONUNBUFFERED=yes
-  matrix:
-    - TOXENV=2.6
-    - TOXENV=2.7
-    - TOXENV=3.3
-    - TOXENV=3.4
-    - TOXENV=3.4
-    - TOXENV=pypy
-    - TOXENV=3.5
-    - TOXENV=flake8
-    - TOXENV=flakeplus
-    - TOXENV=apicheck
-# Disable version 3.3, 3.2 & pypy
-jobs: 
-  exclude:
-    - arch: ppc64le
-      TOXENV=2.6
-    - arch: ppc64le
-      TOXENV=3.3
-    - arch: ppc64le
-      TOXENV=3.4
-    - arch: ppc64le
-      TOXENV=pypy
-    - arch: ppc64le
-      TOXENV=flake8
-    - arch: ppc64le
-      TOXENV=flakeplus
-    - arch: ppc64learch:
-    - amd64
-    - ppc64le
 language: cpp
 sudo: required
 dist: bionic
@@ -122,15 +85,3 @@ deploy:
   file: build/*/cen64-qt_*
   on:
     tags: true
-
-      TOXENV=apicheck
-before_install:
-        |
-        if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then
-    sudo chown -Rv $USER:$GROUP /usr/local/lib/python3.5/dist-packages
-  fi
-install: travis_retry pip install -U tox
-script: tox -v -- -v
-after_success:
-  - .tox/$TRAVIS_PYTHON_VERSION/bin/coverage xml
-  - .tox/$TRAVIS_PYTHON_VERSION/bin/codecov -e TOXENV
