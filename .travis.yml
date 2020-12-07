@@ -23,7 +23,7 @@ env:
 # Disable version 3.3, 3.2 & pypy
 jobs: 
   exclude:
-    - env: PYTHONUNBUFFERED=yes
+    - env: TOXENV=2.6
       python: "3.5"
       arch: ppc64le
 install: travis_retry pip install -U tox
